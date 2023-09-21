@@ -4,49 +4,48 @@ from possible_combinations import possibilities
 WHITE = "white"
 winning_combinations = [123, 456, 789, 147, 258, 369, 159, 357]
 all_locs = []
+sign_color = ""
+close_game = 0
 num_of_occupied_locs = 0
 
 
 def put_the_sign(loc, num_loc):
-    global symbol, sign, x_combs, o_combs, x_locs, o_locs, game_ended, num_of_occupied_locs
+    global symbol, sign, x_combs, o_combs, x_locs, o_locs, game_ended, num_of_occupied_locs, sign_color, close_game
     num_of_occupied_locs = 0
     if sign % 2 == 0:
         symbol = "o"
+        sign_color = "blue"
         o_locs += num_loc
         if len(o_locs) >= 3:
             o_combs = possibilities(o_locs)
 
-        loc.config(text=symbol, fg="blue", font=("bold", 30), height=1, width=3)
-        loc.place(x=loc.winfo_x() + 17, y=loc.winfo_y() + 10)
-
-        for comb in o_combs:
-            if comb in winning_combinations:
-                game_ended = messagebox.askyesno("Game ended", "o won the game!!\nHard luck, x\nWanna play again?")
-                if game_ended:
-                    create_screen()
-                    return
-
-                else:
-                    quit()
-
     else:
         symbol = "x"
+        sign_color = "red"
         x_locs += num_loc
         if len(x_locs) >= 3:
             x_combs = possibilities(x_locs)
 
-        loc.config(text=symbol, fg="red", font=("bold", 30), height=1, width=3)
-        loc.place(x=loc.winfo_x() + 17, y=loc.winfo_y() + 10)
+    loc.config(text=symbol, fg=sign_color, font=("bold", 30), height=1, width=3)
+    loc.place(x=loc.winfo_x() + 17, y=loc.winfo_y() + 10)
 
-        for comb in x_combs:
-            if comb in winning_combinations:
-                game_ended = messagebox.askyesno("Game ended", "x won the game!!\nHard luck, o\nWanna play again?")
-                if game_ended:
-                    create_screen()
-                    break
+    for comb in o_combs:
+        if comb in winning_combinations:
+            game_ended = messagebox.askyesno("Game ended", "o won the game!!\nHard luck, x\nWanna play again?")
+            close_game = 1
 
-                else:
-                    quit()
+    for comb in x_combs:
+        if comb in winning_combinations:
+            game_ended = messagebox.askyesno("Game ended", "x won the game!!\nHard luck, o\nWanna play again?")
+            close_game = 1
+
+    if game_ended:
+        create_screen()
+        return
+
+    else:
+        if close_game == 1:
+            quit()
 
     sign += 1
 
@@ -58,12 +57,14 @@ def put_the_sign(loc, num_loc):
             num_of_occupied_locs += 1
             if num_of_occupied_locs == 9:
                 game_ended = messagebox.askyesno("Game ended", "It's a draw\nWanna play again?")
+                close_game = 1
                 if game_ended:
                     create_screen()
                     return
 
                 else:
-                    quit()
+                    if close_game == 1:
+                        quit()
 
 
 win = Tk()
@@ -78,9 +79,11 @@ AI_or_BOT = True
 
 
 def create_screen():
-    global sign, symbol, x_combs, o_combs, x_locs, o_locs, game_ended, all_locs, num_of_occupied_locs, AI_or_BOT
+
+    global sign, symbol, x_combs, o_combs, x_locs, o_locs, game_ended, all_locs, num_of_occupied_locs, AI_or_BOT, close_game
     AI_or_BOT = messagebox.askyesno("Start game", "If you want to play with a human press yes if you want to play with a bot press no")
     game_ended = False
+    close_game = 0
     if AI_or_BOT:
         pass
     sign = 1
