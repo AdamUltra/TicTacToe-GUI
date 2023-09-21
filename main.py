@@ -22,6 +22,12 @@ def put_the_sign(loc, num_loc):
         for comb in o_combs:
             if comb in winning_combinations:
                 game_ended = messagebox.askyesno("Game ended", "o won the game!!\nHard luck, x\nWanna play again?")
+                if game_ended:
+                    create_screen()
+                    return
+
+                else:
+                    quit()
 
     else:
         symbol = "x"
@@ -35,6 +41,14 @@ def put_the_sign(loc, num_loc):
         for comb in x_combs:
             if comb in winning_combinations:
                 game_ended = messagebox.askyesno("Game ended", "x won the game!!\nHard luck, o\nWanna play again?")
+                if game_ended:
+                    create_screen()
+                    break
+
+                else:
+                    quit()
+
+    sign += 1
 
     for i in all_locs:
         if i.cget("text") == "":
@@ -44,11 +58,12 @@ def put_the_sign(loc, num_loc):
             num_of_occupied_locs += 1
             if num_of_occupied_locs == 9:
                 game_ended = messagebox.askyesno("Game ended", "It's a draw\nWanna play again?")
+                if game_ended:
+                    create_screen()
+                    return
 
-    if game_ended:
-        create_screen()
-    else:
-        sign += 1
+                else:
+                    quit()
 
 
 win = Tk()
@@ -59,11 +74,15 @@ canvas = Canvas(height=360, width=360, bg=WHITE, highlightthickness=0)
 img = PhotoImage(file="img.png")
 canvas.create_image(180, 180, image=img, anchor="center")
 canvas.place(x=20, y=20)
+AI_or_BOT = True
 
 
 def create_screen():
-    global sign, symbol, x_combs, o_combs, x_locs, o_locs, game_ended, all_locs, num_of_occupied_locs
+    global sign, symbol, x_combs, o_combs, x_locs, o_locs, game_ended, all_locs, num_of_occupied_locs, AI_or_BOT
+    AI_or_BOT = messagebox.askyesno("Start game", "If you want to play with a human press yes if you want to play with a bot press no")
     game_ended = False
+    if AI_or_BOT:
+        pass
     sign = 1
     num_of_occupied_locs = 0
     symbol = ""
